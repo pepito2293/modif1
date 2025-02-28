@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personnalisation des émojis</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <script src="scripts/script.js" defer></script>
+</head>
+<body>
+
+    <!-- Menu hamburger -->
+    <nav class="hamburger-menu">
+        <input type="checkbox" id="menu-toggle">
+        <label for="menu-toggle" class="menu-icon">☰</label>
+        <ul class="menu-items">
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="emoji-customization.html">Personnaliser les émojis</a></li>
+        </ul>
+    </nav>
+
+    <!-- Contenu principal -->
+    <main>
+        <h2>Personnalisez vos émojis</h2>
+
+        <!-- Bouton "Tout réinitialiser" -->
+        <div class="reset-all-container">
+            <button id="resetAll">Tout réinitialiser</button>
+        </div>
+
+        <!-- Dos des cartes -->
+        <div class="upload-back-container">
+    <label for="backCardUpload" class="bouton-style">Choisir un dos de carte</label>
+    <input type="file" id="backCardUpload" accept="image/*" style="display: none;">
+    <img id="backCardPreview" src="" alt="Aperçu du dos" style="display:none; max-width:100px; margin-top:10px;">
+</div>
+
+        <!-- Tableau des émojis -->
+        <table id="emojiTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Émoji actuel</th>
+                    <th>Nouvelle image</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Génération dynamique des lignes via JavaScript -->
+            </tbody>
+        </table>
+
+        <div class="card-container-wrapper">
+            <div class="card-container" id="cardContainer"></div>
+        </div>
+
+        <!-- Bouton ajout d'un coup -->
+    <div class="upload-multiple-container">
+    <label for="multiFileUpload" class="bouton-style">Importer des images</label>
+    <input type="file" id="multiFileUpload" accept="image/*" multiple style="display: none;">
+</div>
+
+
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Créations DUPDUP</p>
+    </footer>
+
+</body>
+</html>
