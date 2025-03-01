@@ -1,0 +1,44 @@
+/* --- Styles globaux pour toutes les pages --- */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #c4e7fd;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* --- Style du titre principal (h1) --- */
+h1 {
+    font-size: 40px;
+    font-weight: bold;
+    color: #000000;
+    text-align: center;
+}
+
+/* --- Style des boutons généraux --- */
+.bouton-style {
+    padding: 10px 20px;
+    background-color: #ffd700; /* Jaune */
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.bouton-style:hover {
+    background-color: #e6c200;
+    transform: scale(1.05);
+}
+
+/* --- Pied de page --- */
+footer {
+    margin-top: 20px;
+    text-align: center;
+    color: #000;
+}
