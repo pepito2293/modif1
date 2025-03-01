@@ -6,79 +6,68 @@
   <title>Créations Dupdup - Générateur de cartes Dobble</title>
   <link rel="stylesheet" href="styles/style.css">
   <script src="scripts/script.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-
-  
-
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 </head>
 <body>
-  <!-- Menu hamburger -->
-  <nav class="hamburger-menu">
-    <input type="checkbox" id="menu-toggle">
-    <label for="menu-toggle" class="menu-icon">
-      ☰
-    </label>
-    <ul class="menu-items">
-      <li><a href="index.html">Accueil</a></li>
-      <li><a href="emoji-customization.html">Personnaliser les émojis</a></li>
+  <!-- Section d'accueil avec les consignes -->
+  <div id="accueil" class="accueil-container">
+    <h1>Bienvenue sur le Générateur de cartes Dobble</h1>
+    <p>Avant de commencer, voici quelques consignes :</p>
+    <ul>
+      <li>Personnalisez vos émojis ou utilisez ceux par défaut.</li>
+      <li>Générez automatiquement des cartes Dobble.</li>
+      <li>Vous pouvez télécharger les cartes en PDF ou en PNG (ZIP).</li>
+      <li>Ajoutez un dos de carte personnalisé si vous le souhaitez.</li>
     </ul>
-  </nav>
+    <button onclick="commencer()">Commencer</button>
+  </div>
 
-  <!-- Contenu principal -->
-  <header>
-    <img src="isla_200x200.74417624_o08o07y0.jpg" alt="Logo Créations Dupdup" class="logo">
-    <h1>Générateur de cartes personnalisées</h1>
-    <div class="wave"></div>
-  </header>
+  <!-- Contenu principal caché au départ -->
+  <div id="contenuPrincipal" style="display: none;">
+    <header>
+      <img src="isla_200x200.74417624_o08o07y0.jpg" alt="Logo Créations Dupdup" class="logo">
+      <h1>Générateur de cartes personnalisées</h1>
+      <div class="wave"></div>
+    </header>
 
-  <main>
-    <div class="actions">
-      <button onclick="generateCards()">Générer des cartes</button>
-      <button onclick="downloadCardsAsPDF()">Télécharger en PDF</button>
-      <button onclick="exportCardsAsZip()">Télécharger les cartes en PNG (ZIP)</button>
-</div>
-
-    </div>
-
-    <div class="slider-container">
-      <div class="slider-label">
-        <label for="minSize">Taille minimale des émojis :</label>
-        <span id="minSizeValue">30</span> px
+    <main>
+      <div class="actions">
+        <button onclick="generateCards()">Générer des cartes</button>
+        <button onclick="downloadCardsAsPDF()">Télécharger en PDF</button>
+        <button onclick="exportCardsAsZip()">Télécharger les cartes en PNG (ZIP)</button>
       </div>
-      <input type="range" id="minSize" min="10" max="70" value="30" oninput="updatePreview()">
-      <div class="slider-label">
-        <label for="maxSize">Taille maximale des émojis :</label>
-        <span id="maxSizeValue">70</span> px
+
+      <div class="slider-container">
+        <div class="slider-label">
+          <label for="minSize">Taille minimale des émojis :</label>
+          <span id="minSizeValue">30</span> px
+        </div>
+        <input type="range" id="minSize" min="10" max="70" value="30" oninput="updatePreview()">
+        <div class="slider-label">
+          <label for="maxSize">Taille maximale des émojis :</label>
+          <span id="maxSizeValue">70</span> px
+        </div>
+        <input type="range" id="maxSize" min="40" max="120" value="70" oninput="updatePreview()">
       </div>
-      <input type="range" id="maxSize" min="40" max="120" value="70" oninput="updatePreview()">
-    </div>
 
-    <div class="card-container-wrapper">
-      <div class="card-container" id="cardContainer"></div>
-    </div>
-    <div class="actions">
-</div>
+      <div class="card-container-wrapper">
+        <div class="card-container" id="cardContainer"></div>
+      </div>
+    </main>
 
-  </main>
+    <footer>
+      <p>&copy; 2025 Créations Dupdup</p>
+    </footer>
+  </div>
 
-
-  <footer>
-    <p>&copy; 2025 Créations Dupdup</p>
-  </footer>
-  <nav class="hamburger-menu">
-  <input type="checkbox" id="menu-toggle">
-  <label for="menu-toggle" class="menu-icon">
-    ☰
-  </label>
-  <ul class="menu-items">
-    <li><a href="index.html">Accueil</a></li>
-    <li><a href="emoji-customization.html">Personnaliser les émojis</a></li>
-  </ul>
-</nav>
-
+  <script>
+    function commencer() {
+      document.getElementById("accueil").style.display = "none";
+      document.getElementById("contenuPrincipal").style.display = "block";
+    }
+  </script>
 </body>
 </html>
