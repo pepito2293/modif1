@@ -36,20 +36,38 @@
             </div>
         </div>
 
-        <!-- Tableau des émojis -->
-        <table id="emojiTable">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Émoji actuel</th>
-                    <th>Nouvelle image</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Génération dynamique des lignes via JavaScript -->
-            </tbody>
-        </table>
+        <!-- Conteneur des tableaux des émojis -->
+        <div class="emoji-table-container">
+            <!-- Tableau des émojis 1 à 29 -->
+            <table id="emojiTableLeft">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Émoji actuel</th>
+                        <th>Nouvelle image</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Génération dynamique des lignes via JavaScript -->
+                </tbody>
+            </table>
+    
+            <!-- Tableau des émojis 30 à 57 -->
+            <table id="emojiTableRight">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Émoji actuel</th>
+                        <th>Nouvelle image</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Génération dynamique des lignes via JavaScript -->
+                </tbody>
+            </table>
+        </div>
     
         <div class="card-container-wrapper">
             <div class="card-container" id="cardContainer"></div>
