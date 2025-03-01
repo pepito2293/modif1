@@ -302,24 +302,24 @@ footer p {
 
 /* Section toute réinitialisation
 /* Conteneur du bouton "Tout réinitialiser" */
-.reset-all-container {
+main {
     display: flex;
-    justify-content: flex-end;
-    margin-bottom: 10px;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px; /* Ajoute un espacement entre les éléments */
 }
 
-/* Style du bouton "Tout réinitialiser" */
-#resetAll {
-    padding: 10px 20px;
-    background-color: #ff5555; /* Rouge */
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
-    transition: background-color 0.2s, transform 0.2s;
+/* Assure que l'upload est en premier */
+.upload-back-container {
+    order: 1;
 }
+
+/* Assure que le bouton "Tout réinitialiser" vient après */
+.reset-all-container {
+    order: 2;
+    align-self: center; /* Centre le bouton dans la page */
+}
+
 
 /* Effet au survol */
 #resetAll:hover {
