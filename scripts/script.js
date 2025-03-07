@@ -71,24 +71,30 @@ function positionSymbols(cardDiv, card) {
   const cardSize = 250;
   const margin = 20;
 
+  // Récupère les tailles depuis les curseurs
   const minSize = parseInt(document.getElementById("minSize").value, 10) || 30;
   const maxSize = parseInt(document.getElementById("maxSize").value, 10) || 90;
 
-  const positions = [];
+  let positions = []; // <-- Initialiser le tableau des positions ici
 
   card.forEach((symbol) => {
     let isValidPosition = false;
     let x, y, size;
 
+    // Cherche une position valide sans chevauchement
     while (!isValidPosition) {
       size = Math.random() * (maxSize - minSize) + minSize;
       x = margin + Math.random() * (cardSize - 2 * margin - size);
       y = margin + Math.random() * (cardSize - 2 * margin - size);
 
-      isValidPosition = positions.every(pos => {
-        const distance = Math.sqrt(Math.pow(pos.x - x, 2) + Math.pow(pos.y - y, 2));
+      // Vérification du chevauchement
+      isValidPosition = positions.every((pos) => {
+        const distance = Math.sqrt((pos.x - x) ** 2 + (pos.y - y) ** 2);
         return distance > (pos.size + size) / 2 + 10;
       });
+
+      // Si aucune position enregistrée, la première est forcément valide
+      if (positions.length === 0) isValidPosition = true;
     }
 
     positions.push({ x, y, size });
@@ -97,6 +103,7 @@ function positionSymbols(cardDiv, card) {
     const symbolDiv = document.createElement("div");
     symbolDiv.className = "symbol";
 
+    // Vérifie si c'est une image ou un emoji
     if (symbol.startsWith("data:image")) {
       const img = document.createElement("img");
       img.src = symbol;
@@ -108,17 +115,22 @@ function positionSymbols(cardDiv, card) {
       symbolDiv.style.fontSize = `${size}px`;
     }
 
+    // Application du style et de la rotation
     Object.assign(symbolDiv.style, {
+      position: "absolute",
       left: `${x}px`,
       top: `${y}px`,
-      transform: `rotate(${rotation}deg)`,
-      position: "absolute"
+      width: `${size}px`,
+      height: `${size}px`,
+      transform: `rotate(${Math.random() * 360}deg)`,
+      transformOrigin: "center",
     });
 
+    enableDrag(symbolDiv); // Permet le déplacement par drag-and-drop
     cardDiv.appendChild(symbolDiv);
-    positions.push({ x, y, size });
   });
 }
+
 
 // Fonction pour activer le déplacement des émojis
 function enableDrag(symbol) {
