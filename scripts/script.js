@@ -128,46 +128,66 @@ function positionSymbols(cardDiv, card) {
 
 // Fonction pour activer le déplacement et la sélection d'un émoji
 function enableDrag(symbol) {
-  let isDragging = false;
-  let offsetX, offsetY;
+    let isDragging = false;
+    let offsetX, offsetY;
 
-  symbol.addEventListener("dragstart", (event) => event.preventDefault());
+    symbol.addEventListener("dragstart", (event) => event.preventDefault());
 
-  symbol.addEventListener("mousedown", (event) => {
-    isDragging = true;
-    offsetX = event.clientX - symbol.offsetLeft;
-    offsetY = event.clientY - symbol.offsetTop;
-    symbol.style.cursor = "grabbing";
+    symbol.addEventListener("mousedown", (event) => {
+        isDragging = true;
+        offsetX = event.clientX - symbol.offsetLeft;
+        offsetY = event.clientY - symbol.offsetTop;
+        symbol.style.cursor = "grabbing";
 
-    selectEmoji(symbol);
-  });
+        // Sélectionne l'émoji pour la rotation
+        selectEmoji(symbol);
+    });
 
-  document.addEventListener("mousemove", (event) => {
-    if (isDragging) {
-      const parentRect = symbol.parentElement.getBoundingClientRect();
-      let newLeft = event.clientX - offsetX;
-      let newTop = event.clientY - offsetY;
+    document.addEventListener("mousemove", (event) => {
+        if (isDragging) {
+            const parentRect = symbol.parentElement.getBoundingClientRect();
+            let newLeft = event.clientX - offsetX;
+            let newTop = event.clientY - offsetY;
 
-      newLeft = Math.max(0, Math.min(newLeft, parentRect.width - symbol.offsetWidth));
-      newTop = Math.max(0, Math.min(newTop, parentRect.height - symbol.offsetHeight));
+            newLeft = Math.max(0, Math.min(newLeft, parentRect.width - symbol.offsetWidth));
+            newTop = Math.max(0, Math.min(newTop, parentRect.height - symbol.offsetHeight));
 
-      symbol.style.left = `${newLeft}px`;
-      symbol.style.top = `${newTop}px`;
-    }
-  });
+            symbol.style.left = `${newLeft}px`;
+            symbol.style.top = `${newTop}px`;
+        }
+    });
 
-  document.addEventListener("mouseup", () => {
-    if (isDragging) {
-      isDragging = false;
-      symbol.style.cursor = "move";
-    }
-  });
+    document.addEventListener("mouseup", () => {
+        if (isDragging) {
+            isDragging = false;
+            symbol.style.cursor = "move";
+        }
+    });
 
-  symbol.addEventListener("click", (e) => {
-    e.stopPropagation();
-    selectEmoji(symbol);
-  });
+    symbol.addEventListener("click", (e) => {
+        e.stopPropagation();
+        selectEmoji(symbol);
+    });
 }
+
+// Fonction pour sélectionner un émoji
+function selectEmoji(symbol) {
+    currentSelectedEmoji = symbol;
+    const rotationSlider = document.getElementById("emojiRotation");
+    const rotationValue = document.getElementById("emojiRotationValue");
+
+    const currentRotation = parseInt(symbol.dataset.rotation) || 0;
+    rotationSlider.value = currentRotation;
+    rotationValue.textContent = currentRotation;
+}
+
+// Désélectionne l'émoji en cliquant ailleurs
+document.body.addEventListener("click", (event) => {
+    if (!event.target.classList.contains('symbol')) {
+        currentSelectedEmoji = null;
+    }
+});
+
 
 let currentSelectedEmoji = null;
 
@@ -516,4 +536,17 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+});
+
+// Curseur de rotation
+const emojiRotationSlider = document.getElementById("emojiRotation");
+
+emojiRotationSlider.addEventListener("input", (event) => {
+    const newRotation = event.target.value;
+    document.getElementById("emojiRotationValue").textContent = newRotation;
+
+    if (currentSelectedEmoji) {
+        currentSelectedEmoji.style.transform = `rotate(${newRotation}deg)`;
+        currentSelectedEmoji.dataset.rotation = newRotation;
+    }
 });
