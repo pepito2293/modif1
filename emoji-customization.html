@@ -6,7 +6,48 @@
     <title>Personnalisation des émojis</title>
    <link rel="stylesheet" href="styles/global.css">
     <link rel="stylesheet" href="styles/emoji-customization.css">
-    <script src="scripts/script.js" defer></script>
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+    // Affichage du tableau des émojis
+    if (typeof populateEmojiTable === 'function') {
+        populateEmojiTable(); // Cette fonction génère ton tableau
+    }
+
+    // Gestion du bouton "Tout réinitialiser"
+    const resetAllButton = document.getElementById("resetAll");
+    if (resetAllButton) {
+        resetAllButton.addEventListener("click", () => {
+            if (confirm("Voulez-vous vraiment réinitialiser tous les émojis ?")) {
+                emojiList = [...defaultEmojis];
+                saveEmojiList();
+                populateEmojiTable(); // Recharge le tableau mis à jour
+            }
+        });
+    }
+
+    // Gestion de l'ajout du dos de carte
+    const backCardUpload = document.getElementById("backCardUpload");
+    if (backCardUpload) {
+        backCardUpload.addEventListener("change", (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    backCardImage = e.target.result;
+                    localStorage.setItem("backCardImage", backCardImage);
+                    const backCardPreview = document.getElementById("backCardPreview");
+                    if (backCardPreview) {
+                        backCardPreview.src = backCardImage;
+                        backCardPreview.style.display = "block";
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+});
+</script>
+
 </head>
 <body>
 
