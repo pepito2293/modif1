@@ -443,3 +443,47 @@ window.addEventListener("load", () => {
         document.getElementById("backCardPreview").style.display = "block";
     }
 });
+
+
+// --- Affiche le curseur de contrôle de taille ---
+function selectEmoji(symbol) {
+  currentSelectedEmoji = symbol;
+  const sizeControl = document.getElementById("sizeControl");
+  const emojiSize = document.getElementById("emojiSize");
+  const emojiSizeValue = document.getElementById("emojiSizeValue");
+
+  const currentSize = symbol.querySelector('img') ? symbol.offsetWidth : parseInt(window.getComputedStyle(symbol).fontSize);
+
+  emojiSize.value = currentSize;
+  emojiSizeValue.textContent = currentSize;
+
+  sizeControl.style.display = "flex";
+}
+
+// --- Cache le contrôle quand on clique ailleurs ---
+document.body.addEventListener("click", () => {
+  currentSelectedEmoji = null;
+  document.getElementById("sizeControl").style.display = "none";
+});
+
+// --- Ajuste dynamiquement la taille de l'émoji sélectionné ---
+document.getElementById("emojiSize").addEventListener("input", (event) => {
+  const newSize = event.target.value;
+  document.getElementById("emojiSizeValue").textContent = newSize;
+
+  if (currentSelectedEmoji) {
+    if (currentSelectedEmoji.querySelector('img')) {
+      currentSelectedEmoji.style.width = `${newSize}px`;
+      currentSelectedEmoji.style.height = `${newSize}px`;
+    } else {
+      currentSelectedEmoji.style.fontSize = `${newSize}px`;
+    }
+  }
+});
+
+// --- Désélectionne l'émoji en cliquant ailleurs sur la page ---
+document.body.addEventListener("click", () => {
+  currentSelectedEmoji = null;
+  document.getElementById("sizeControl").style.display = "none";
+});
+
