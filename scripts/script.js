@@ -110,7 +110,7 @@ function enableDrag(symbol) {
 
 let currentSelectedEmoji = null;
 
-// Sélectionner un emoji
+// Fonction pour sélectionner un émoji
 function selectEmoji(symbol) {
   currentSelectedEmoji = symbol;
   const sizeControl = document.getElementById("sizeControl");
@@ -125,11 +125,12 @@ function selectEmoji(symbol) {
   sizeControl.style.display = "flex";
 }
 
-// Désélectionner l'émoji en cliquant ailleurs
-let currentSelectedEmoji = null;
-document.body.addEventListener("click", () => {
-  currentSelectedEmoji = null;
-  document.getElementById("sizeControl").style.display = "none";
+// Désélectionne l'émoji en cliquant ailleurs
+ document.body.addEventListener("click", (event) => {
+  if (!event.target.classList.contains('symbol')) {
+    currentSelectedEmoji = null;
+    document.getElementById("sizeControl").style.display = "none";
+  }
 });
 
 // Modification dynamique de taille via le curseur
