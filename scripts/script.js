@@ -490,91 +490,104 @@ window.addEventListener("load", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  const currentPage = window.location.pathname;
-
-  // Initialisation commune aux deux pages
+  
+  // Génération du tableau des émojis si la fonction existe
   if (typeof populateEmojiTable === 'function') {
     populateEmojiTable();
   }
 
-  if (typeof generateCards === 'function' && currentPage.includes("generateur.html")) {
-    generateCards();
-
-    const minSizeInput = document.getElementById("minSize");
-    const maxSizeInput = document.getElementById("maxSize");
-
-    minSizeInput?.addEventListener("input", () => {
-      updatePreview();
+  // Génération des cartes Dobble uniquement sur la page generateur.html
+  const currentPage = window.location.pathname;
+  if (currentPage.includes("generateur.html")) {
+    if (typeof generateCards === 'function') {
       generateCards();
-    });
 
-    maxSizeInput?.addEventListener("input", () => {
-      updatePreview();
-      generateCards();
-    });
+      const minSizeInput = document.getElementById("minSize");
+      const maxSizeInput = document.getElementById("maxSize");
+
+      if (minSizeInput) {
+        minSizeInput.addEventListener("input", () => {
+          updatePreview();
+          generateCards();
+        });
+      }
+
+      if (maxSizeInput) {
+        maxSizeInput.addEventListener("input", () => {
+          updatePreview();
+          generateCards();
+        });
+      }
+    }
+
+    // Gestion des curseurs taille et rotation (uniquement sur generateur.html)
+    const emojiSizeSlider = document.getElementById("emojiSize");
+    const emojiRotationSlider = document.getElementById("emojiRotation");
+
+    if (emojiSizeSlider) {
+      emojiSizeSlider.addEventListener("input", (event) => {
+        const newSize = event.target.value;
+        const emojiSizeValue = document.getElementById("emojiSizeValue");
+        if (emojiSizeValue) emojiSizeValue.textContent = newSize;
+
+        if (currentSelectedEmoji) {
+          if (currentSelectedEmoji.querySelector('img')) {
+            currentSelectedEmoji.style.width = `${newSize}px`;
+            currentSelectedEmoji.style.height = `${newSize}px`;
+          } else {
+            currentSelectedEmoji.style.fontSize = `${newSize}px`;
+          }
+        }
+      });
+    }
+
+    if (emojiRotationSlider) {
+      emojiRotationSlider.addEventListener("input", (event) => {
+        const newRotation = event.target.value;
+        const emojiRotationValue = document.getElementById("emojiRotationValue");
+        if (emojiRotationValue) emojiRotationValue.textContent = newRotation;
+
+        if (currentSelectedEmoji) {
+          currentSelectedEmoji.style.transform = `rotate(${newRotation}deg)`;
+          currentSelectedEmoji.dataset.rotation = newRotation;
+        }
+      });
+    }
   }
 
-  // Page emoji-customization.html uniquement
+  // Gestion bouton « Tout réinitialiser » uniquement sur la page emoji-customization.html
   if (currentPage.includes("emoji-customization.html")) {
     const resetAllButton = document.getElementById("resetAll");
-    resetAllButton?.addEventListener("click", () => {
-      if (confirm("Voulez-vous vraiment réinitialiser tous les émojis ?")) {
-        emojiList = [...defaultEmojis];
-        saveEmojiList();
-        populateEmojiTable();
-        if (typeof generateCards === 'function') generateCards();
-      }
-    });
-
-    const backCardUpload = document.getElementById("backCardUpload");
-    backCardUpload?.addEventListener("change", (event) => {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          backCardImage = e.target.result;
-          localStorage.setItem("backCardImage", backCardImage);
-          const backCardPreview = document.getElementById("backCardPreview");
-          backCardPreview.src = backCardImage;
-          backCardPreview.style.display = "block";
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-  }
-
-  // Gestion taille et rotation individuelle (page generateur.html uniquement)
-  const emojiSizeSlider = document.getElementById("emojiSize");
-  const emojiRotationSlider = document.getElementById("emojiRotation");
-
-  if (emojiSizeSlider) {
-    emojiSizeSlider.addEventListener("input", (event) => {
-      const newSize = event.target.value;
-      const emojiSizeValue = document.getElementById("emojiSizeValue");
-      emojiSizeValue.textContent = newSize;
-
-      if (currentSelectedEmoji) {
-        if (currentSelectedEmoji.querySelector('img')) {
-          currentSelectedEmoji.style.width = `${newSize}px`;
-          currentSelectedEmoji.style.height = `${newSize}px`;
-        } else {
-          currentSelectedEmoji.style.fontSize = `${newSize}px`;
+    if (resetAllButton) {
+      resetAllButton.addEventListener("click", () => {
+        if (confirm("Voulez-vous vraiment réinitialiser tous les émojis ?")) {
+          emojiList = [...defaultEmojis];
+          saveEmojiList();
+          populateEmojiTable();
         }
-      }
-    });
-  }
+      });
+    }
 
-  if (emojiRotationSlider) {
-    emojiRotationSlider.addEventListener("input", (event) => {
-      const newRotation = event.target.value;
-      const emojiRotationValue = document.getElementById("emojiRotationValue");
-      emojiRotationValue.textContent = newRotation;
-
-      if (currentSelectedEmoji) {
-        currentSelectedEmoji.style.transform = `rotate(${newRotation}deg)`;
-        currentSelectedEmoji.dataset.rotation = newRotation;
-      }
-    });
+    // Gestion de l'upload du dos de carte
+    const backCardUpload = document.getElementById("backCardUpload");
+    if (backCardUpload) {
+      backCardUpload.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            backCardImage = e.target.result;
+            localStorage.setItem("backCardImage", backCardImage);
+            const backCardPreview = document.getElementById("backCardPreview");
+            if (backCardPreview) {
+              backCardPreview.src = backCardImage;
+              backCardPreview.style.display = "block";
+            }
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
   }
 
   // Chargement image dos carte (commun aux deux pages)
