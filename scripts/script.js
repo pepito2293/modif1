@@ -177,14 +177,21 @@ function selectEmoji(symbol) {
   const sizeControl = document.getElementById("sizeControl");
   const emojiSize = document.getElementById("emojiSize");
   const emojiSizeValue = document.getElementById("emojiSizeValue");
+  const emojiRotation = document.getElementById("emojiRotation");
+  const emojiRotationValue = document.getElementById("emojiRotationValue");
 
   const currentSize = symbol.offsetWidth;
+  const currentRotation = symbol.dataset.rotation || 0;
 
   emojiSize.value = currentSize;
   emojiSizeValue.textContent = currentSize;
 
+  emojiRotation.value = currentRotation;
+  emojiRotationValue.textContent = currentRotation;
+
   sizeControl.style.display = "flex";
 }
+
 
 // Désélectionne l'émoji en cliquant ailleurs
  document.body.addEventListener("click", (event) => {
@@ -517,3 +524,23 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+// Gestion de la rotation dynamique des émojis sélectionnés
+document.addEventListener("DOMContentLoaded", () => {
+  const emojiRotationSlider = document.getElementById("emojiRotation");
+  const emojiRotationValue = document.getElementById("emojiRotationValue");
+
+  // Vérification existence du curseur rotation
+  if (emojiRotationSlider) {
+    emojiRotationSlider.addEventListener("input", (event) => {
+      const newRotation = event.target.value;
+      emojiRotationValue.textContent = newRotation;
+
+      if (currentSelectedEmoji) {
+        currentSelectedEmoji.style.transform = `rotate(${newRotation}deg)`;
+        currentSelectedEmoji.dataset.rotation = newRotation;
+      }
+    });
+  }
+});
+
