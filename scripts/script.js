@@ -164,22 +164,13 @@ function enableDrag(symbol) {
         }
     });
 
+    // Sélectionner un émoji pour rotation
     symbol.addEventListener("click", (e) => {
         e.stopPropagation();
         selectEmoji(symbol);
     });
 }
 
-// Fonction pour sélectionner un émoji
-function selectEmoji(symbol) {
-    currentSelectedEmoji = symbol;
-    const rotationSlider = document.getElementById("emojiRotation");
-    const rotationValue = document.getElementById("emojiRotationValue");
-
-    const currentRotation = parseInt(symbol.dataset.rotation) || 0;
-    rotationSlider.value = currentRotation;
-    rotationValue.textContent = currentRotation;
-}
 
 // Désélectionne l'émoji en cliquant ailleurs
 document.body.addEventListener("click", (event) => {
@@ -193,17 +184,23 @@ let currentSelectedEmoji = null;
 
 // Fonction pour sélectionner un émoji
 function selectEmoji(symbol) {
-  currentSelectedEmoji = symbol;
-  const sizeControl = document.getElementById("sizeControl");
-  const emojiSize = document.getElementById("emojiSize");
-  const emojiSizeValue = document.getElementById("emojiSizeValue");
+    currentSelectedEmoji = symbol;
+    const sizeControl = document.getElementById("sizeControl");
+    const emojiSize = document.getElementById("emojiSize");
+    const emojiSizeValue = document.getElementById("emojiSizeValue");
+    const emojiRotation = document.getElementById("emojiRotation");
+    const emojiRotationValue = document.getElementById("emojiRotationValue");
 
-  const currentSize = symbol.offsetWidth;
+    const currentSize = symbol.offsetWidth;
+    const currentRotation = parseInt(symbol.dataset.rotation) || 0;
 
-  emojiSize.value = currentSize;
-  emojiSizeValue.textContent = currentSize;
+    emojiSize.value = currentSize;
+    emojiSizeValue.textContent = currentSize;
 
-  sizeControl.style.display = "flex";
+    emojiRotation.value = currentRotation;
+    emojiRotationValue.textContent = currentRotation;
+
+    sizeControl.style.display = "flex";
 }
 
 // Désélectionne l'émoji en cliquant ailleurs
@@ -550,3 +547,4 @@ emojiRotationSlider.addEventListener("input", (event) => {
         currentSelectedEmoji.dataset.rotation = newRotation;
     }
 });
+
