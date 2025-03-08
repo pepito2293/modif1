@@ -58,17 +58,26 @@ function generateDobbleCards() {
 
 // Fonction pour afficher les cartes dans la grille
 function generateCards() {
-  const cardContainer = document.getElementById("cardContainer");
-  cardContainer.innerHTML = "";
+    const cardContainer = document.getElementById("cardContainer");
+    cardContainer.innerHTML = "";
 
-  const cards = generateDobbleCards();
-  cards.forEach((card) => {
-    const cardDiv = document.createElement("div");
-    cardDiv.className = "card";
-    positionSymbols(cardDiv, card);
-    cardContainer.appendChild(cardDiv);
-  });
+    const cards = generateDobbleCards();
+    if (!cards || cards.length === 0) {
+        console.error("❌ Problème lors de la génération des cartes : aucune carte n'a été créée.");
+        alert("Erreur : Impossible de générer les cartes.");
+        return;
+    }
+
+    cards.forEach((card) => {
+        const cardDiv = document.createElement("div");
+        cardDiv.className = "card";
+        positionSymbols(cardDiv, card);
+        cardContainer.appendChild(cardDiv);
+    });
+
+    console.log("✅ Cartes générées avec succès !");
 }
+
 
 // Fonction pour positionner les symboles sur une carte
 function positionSymbols(cardDiv, card) {
