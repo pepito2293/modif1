@@ -20,7 +20,12 @@ function saveEmojiList() {
 }
 
 // Initialisation de la liste d'émojis (personnalisée ou par défaut)
-let emojiList = loadEmojiList();
+let emojiList = [];
+document.addEventListener("DOMContentLoaded", () => {
+    emojiList = loadEmojiList();
+    populateEmojiTable();
+    generateCards();
+});
 
 // Fonction pour générer les cartes Dobble
 function generateDobbleCards() {
