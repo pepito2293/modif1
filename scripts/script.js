@@ -481,3 +481,42 @@ window.addEventListener("load", () => {
         document.getElementById("backCardPreview").style.display = "block";
     }
 });
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const emojiSizeSlider = document.getElementById("emojiSize");
+  const emojiRotationSlider = document.getElementById("emojiRotation");
+
+  if (emojiSizeSlider) {
+    emojiSizeSlider.addEventListener("input", (event) => {
+      const newSize = event.target.value;
+      const emojiSizeValue = document.getElementById("emojiSizeValue");
+      if (emojiSizeValue) emojiSizeValue.textContent = newSize;
+
+      if (currentSelectedEmoji) {
+        if (currentSelectedEmoji.querySelector('img')) {
+          currentSelectedEmoji.style.width = `${newSize}px`;
+          currentSelectedEmoji.style.height = `${newSize}px`;
+        } else {
+          currentSelectedEmoji.style.fontSize = `${newSize}px`;
+        }
+      }
+    });
+  }
+
+  if (emojiRotationSlider) {
+    emojiRotationSlider.addEventListener("input", (event) => {
+      const newRotation = event.target.value;
+      const emojiRotationValue = document.getElementById("emojiRotationValue");
+      if (emojiRotationValue) emojiRotationValue.textContent = newRotation;
+
+      if (currentSelectedEmoji) {
+        currentSelectedEmoji.style.transform = `rotate(${newRotation}deg)`;
+        currentSelectedEmoji.dataset.rotation = newRotation;
+      }
+    });
+  }
+});
