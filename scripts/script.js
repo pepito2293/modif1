@@ -64,6 +64,67 @@ function generateCards() {
     cardContainer.appendChild(cardDiv);
   });
 }
+// Fonction pour positionner les symboles sur une carte
+function positionSymbols(cardDiv, card) {
+  const cardSize = 250;
+  const margin = 20;
+
+  // Récupère les valeurs des curseurs pour les tailles minimale et maximale
+  const minSize = parseInt(document.getElementById("minSize").value, 10) || 30;
+  const maxSize = parseInt(document.getElementById("maxSize").value, 10) || 70;
+
+  const positions = [];
+
+  card.forEach((symbol) => {
+    let isValidPosition = false;
+    let x, y, size;
+
+    while (!isValidPosition) {
+      size = Math.random() * (maxSize - minSize) + minSize; // Taille aléatoire
+      x = margin + Math.random() * (cardSize - 2 * margin - size);
+      y = margin + Math.random() * (cardSize - 2 * margin - size);
+
+      // Vérifie que les émojis ne se chevauchent pas
+      isValidPosition = positions.every(pos => {
+        const distance = Math.sqrt((pos.x - x) ** 2 + (pos.y - y) ** 2);
+        return distance > (pos.size + size) / 2 + 10;
+      });
+
+      if (positions.length === 0) isValidPosition = true;
+    }
+
+    positions.push({ x, y, size });
+
+    const rotation = Math.random() * 360; // Rotation aléatoire entre 0 et 360 degrés
+    const symbolDiv = document.createElement("div");
+    symbolDiv.className = "symbol";
+
+    if (symbol.startsWith("data:image")) {
+      const img = document.createElement("img");
+      img.src = symbol;
+      img.style.width = `${size}px`;
+      img.style.height = `${size}px`;
+      symbolDiv.appendChild(img);
+    } else {
+      symbolDiv.textContent = symbol;
+      symbolDiv.style.fontSize = `${size}px`;
+    }
+
+    // Applique les styles, y compris la rotation
+    Object.assign(symbolDiv.style, {
+      position: "absolute",
+      left: `${x}px`,
+      top: `${y}px`,
+      width: `${size}px`,
+      height: `${size}px`,
+      transform: `rotate(${Math.random() * 360}deg)`,
+      transformOrigin: "center",
+    });
+
+    enableDrag(symbolDiv); // Active le déplacement pour chaque émoji
+    cardDiv.appendChild(symbolDiv);
+  });
+}
 
 // Fonction pour activer le déplacement et la sélection d'un émoji
 function enableDrag(symbol) {
