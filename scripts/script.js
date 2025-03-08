@@ -64,6 +64,14 @@ function generateCards() {
     cardContainer.appendChild(cardDiv);
   });
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    const emojiRotationSlider = document.getElementById("emojiRotation");
+    if (emojiRotationSlider) {
+        emojiRotationSlider.value = 0; // Réinitialise la rotation à 0 au démarrage
+    }
+});
+
 // Fonction pour positionner les symboles sur une carte
 function positionSymbols(cardDiv, card) {
   const cardSize = 250;
@@ -165,11 +173,11 @@ function enableDrag(symbol) {
     });
 
     // Sélectionner un émoji pour rotation
-    symbol.addEventListener("click", (e) => {
-        e.stopPropagation();
-        selectEmoji(symbol);
-    });
-}
+symbol.addEventListener("mousedown", (event) => {
+    event.stopPropagation(); // Empêche la désélection immédiate
+    selectEmoji(symbol);     // Sélectionne correctement l'émoji pour la rotation
+});
+
 
 
 // Désélectionne l'émoji en cliquant ailleurs
@@ -185,6 +193,7 @@ let currentSelectedEmoji = null;
 // Fonction pour sélectionner un émoji
 function selectEmoji(symbol) {
     currentSelectedEmoji = symbol;
+
     const sizeControl = document.getElementById("sizeControl");
     const emojiSize = document.getElementById("emojiSize");
     const emojiSizeValue = document.getElementById("emojiSizeValue");
@@ -202,6 +211,7 @@ function selectEmoji(symbol) {
 
     sizeControl.style.display = "flex";
 }
+
 
 // Désélectionne l'émoji en cliquant ailleurs
  document.body.addEventListener("click", (event) => {
@@ -547,4 +557,3 @@ emojiRotationSlider.addEventListener("input", (event) => {
         currentSelectedEmoji.dataset.rotation = newRotation;
     }
 });
-
