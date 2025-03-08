@@ -489,8 +489,9 @@ window.addEventListener("load", () => {
     }
 });
 
-// Tableau emojis
 document.addEventListener("DOMContentLoaded", () => {
+
+  // Vérifie si on est sur une page avec les curseurs de taille/rotation
   const emojiSizeSlider = document.getElementById("emojiSize");
   const emojiRotationSlider = document.getElementById("emojiRotation");
 
@@ -511,6 +512,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Vérification de l’existence du curseur rotation avant de l'utiliser
+  const emojiRotationSlider = document.getElementById("emojiRotation");
   if (emojiRotationSlider) {
     emojiRotationSlider.addEventListener("input", (event) => {
       const newRotation = event.target.value;
@@ -523,24 +526,44 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-});
 
-// Gestion de la rotation dynamique des émojis sélectionnés
-document.addEventListener("DOMContentLoaded", () => {
-  const emojiRotationSlider = document.getElementById("emojiRotation");
-  const emojiRotationValue = document.getElementById("emojiRotationValue");
+  // Chargement spécifique du tableau d'émojis (toujours nécessaire ici)
+  if (typeof populateEmojiTable === 'function') {
+    populateEmojiTable();
+  }
 
-  // Vérification existence du curseur rotation
-  if (emojiRotationSlider) {
-    emojiRotationSlider.addEventListener("input", (event) => {
-      const newRotation = event.target.value;
-      emojiRotationValue.textContent = newRotation;
-
-      if (currentSelectedEmoji) {
-        currentSelectedEmoji.style.transform = `rotate(${newRotation}deg)`;
-        currentSelectedEmoji.dataset.rotation = newRotation;
+  // Vérification existence bouton resetAll
+  const resetAllButton = document.getElementById("resetAll");
+  if (resetAllButton) {
+    resetAllButton.addEventListener("click", () => {
+      if (confirm("Voulez-vous vraiment réinitialiser tous les émojis ?")) {
+        emojiList = [...defaultEmojis];
+        saveEmojiList();
+        populateEmojiTable();
+        if(typeof generateCards === 'function') generateCards();
       }
     });
   }
-});
 
+  // Vérification existence bouton backCardUpload
+  const backCardUpload = document.getElementById("backCardUpload");
+  if (backCardUpload) {
+    backCardUpload.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          backCardImage = e.target.result;
+          localStorage.setItem("backCardImage", backCardImage);
+          const preview = document.getElementById("backCardPreview");
+          if (backCardPreview) {
+            backCardPreview.src = backCardImage;
+            backCardPreview.style.display = "block";
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+});
