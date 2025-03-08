@@ -65,45 +65,39 @@ function generateCards() {
   });
 }
 
-
 // Fonction pour positionner les symboles sur une carte
 function positionSymbols(cardDiv, card) {
   const cardSize = 250;
   const margin = 20;
 
-  // Récupère les tailles depuis les curseurs
+  // Récupère les valeurs des curseurs pour les tailles minimale et maximale
   const minSize = parseInt(document.getElementById("minSize").value, 10) || 30;
-  const maxSize = parseInt(document.getElementById("maxSize").value, 10) || 90;
+  const maxSize = parseInt(document.getElementById("maxSize").value, 10) || 70;
 
-  let positions = []; // <-- Initialiser le tableau des positions ici
+  const positions = [];
 
   card.forEach((symbol) => {
     let isValidPosition = false;
     let x, y, size;
 
-    // Cherche une position valide sans chevauchement
     while (!isValidPosition) {
-      size = Math.random() * (maxSize - minSize) + minSize;
+      size = Math.random() * (maxSize - minSize) + minSize; // Taille aléatoire
       x = margin + Math.random() * (cardSize - 2 * margin - size);
       y = margin + Math.random() * (cardSize - 2 * margin - size);
 
-      // Vérification du chevauchement
-      isValidPosition = positions.every((pos) => {
-        const distance = Math.sqrt((pos.x - x) ** 2 + (pos.y - y) ** 2);
+      // Vérifie que les émojis ne se chevauchent pas
+      isValidPosition = positions.every(pos => {
+        const distance = Math.sqrt(Math.pow(pos.x - x, 2) + Math.pow(pos.y - y, 2));
         return distance > (pos.size + size) / 2 + 10;
       });
-
-      // Si aucune position enregistrée, la première est forcément valide
-      if (positions.length === 0) isValidPosition = true;
     }
 
     positions.push({ x, y, size });
 
-    const rotation = Math.random() * 360;
+    const rotation = Math.random() * 360; // Rotation aléatoire entre 0 et 360 degrés
     const symbolDiv = document.createElement("div");
     symbolDiv.className = "symbol";
 
-    // Vérifie si c'est une image ou un emoji
     if (symbol.startsWith("data:image")) {
       const img = document.createElement("img");
       img.src = symbol;
@@ -115,22 +109,20 @@ function positionSymbols(cardDiv, card) {
       symbolDiv.style.fontSize = `${size}px`;
     }
 
-    // Application du style et de la rotation
+    // Applique les styles, y compris la rotation
     Object.assign(symbolDiv.style, {
-      position: "absolute",
       left: `${x}px`,
       top: `${y}px`,
       width: `${size}px`,
       height: `${size}px`,
-      transform: `rotate(${Math.random() * 360}deg)`,
-      transformOrigin: "center",
+      transform: `rotate(${rotation}deg)`, // Applique la rotation
+      transformOrigin: "center", // Centre la rotation
     });
 
-    enableDrag(symbolDiv); // Permet le déplacement par drag-and-drop
+    enableDrag(symbolDiv); // Active le déplacement pour chaque émoji
     cardDiv.appendChild(symbolDiv);
   });
 }
-
 
 // Fonction pour activer le déplacement des émojis
 function enableDrag(symbol) {
@@ -377,17 +369,15 @@ function resetEmoji(index) {
 // Fonction pour mettre à jour l'affichage des curseurs
 function updatePreview() {
   const minSizeInput = document.getElementById("minSize");
-  const maxSize = document.getElementById("maxSize");
+  const maxSizeInput = document.getElementById("maxSize");
+  document.getElementById("minSizeValue").textContent = `${minSizeInput.value}px`;
+  document.getElementById("maxSizeValue").textContent = `${maxSizeInput.value}px`;
 
-  document.getElementById("minSizeValue").textContent = minSizeInput.value;
-  document.getElementById("maxSizeValue").textContent = maxSizeInput.value;
-
-  if (parseInt(minSizeInput.value) > parseInt(maxSizeInput.value)) {
+  if (parseInt(minSizeInput.value, 10) > parseInt(maxSizeInput.value, 10)) {
     maxSizeInput.value = minSizeInput.value;
-    document.getElementById("maxSizeValue").textContent = maxSizeInput.value;
+    document.getElementById("maxSizeValue").textContent = `${maxSizeInput.value}px`;
   }
 }
-
 
 // Initialisation
 document.addEventListener("DOMContentLoaded", () => {
@@ -452,87 +442,4 @@ window.addEventListener("load", () => {
         document.getElementById("backCardPreview").src = backCardImage;
         document.getElementById("backCardPreview").style.display = "block";
     }
-});
-
-
-let currentSelectedEmoji = null; // emoji sélectionné actuellement
-
-// Activation du curseur sur clic d'un emoji
-function enableDrag(symbol) {
-  let isDragging = false;
-  let offsetX, offsetY;
-
-  symbol.addEventListener("dragstart", (event) => event.preventDefault());
-
-  symbol.addEventListener("mousedown", (event) => {
-    isDragging = true;
-    offsetX = event.clientX - symbol.offsetLeft;
-    offsetY = event.clientY - symbol.offsetTop;
-    symbol.style.cursor = "grabbing";
-
-    // Affiche le curseur de taille quand l'emoji est sélectionné
-    showSizeControl(symbol);
-  });
-
-  document.addEventListener("mousemove", (event) => {
-    if (isDragging) {
-      const parentRect = symbol.parentElement.getBoundingClientRect();
-      let newLeft = event.clientX - offsetX;
-      let newTop = event.clientY - offsetY;
-
-      newLeft = Math.max(0, Math.min(newLeft, parentRect.width - symbol.offsetWidth));
-      newTop = Math.max(0, Math.min(newTop, parentRect.height - symbol.offsetHeight));
-
-      symbol.style.left = `${newLeft}px`;
-      symbol.style.top = `${newTop}px`;
-    }
-  });
-
-  document.addEventListener("mouseup", () => {
-    if (isDragging) {
-      isDragging = false;
-      symbol.style.cursor = "move";
-    }
-  });
-
-  // Quand l'emoji est cliqué, il devient l'élément sélectionné
-  symbol.addEventListener("click", (e) => {
-    e.stopPropagation(); // évite la désélection immédiate
-    selectEmoji(symbol);
-  });
-}
-
-// Fonction pour sélectionner un emoji
-function selectEmoji(symbol) {
-  currentSelectedEmoji = symbol;
-  const sizeControl = document.getElementById("sizeControl");
-  const emojiSizeSlider = document.getElementById("emojiSize");
-
-  // Affiche le curseur avec la taille actuelle
-  const currentSize = parseInt(window.getComputedStyle(symbol).fontSize || symbol.offsetWidth);
-  emojiSize.value = currentSelectedEmoji.offsetWidth;
-  sizeControl.style.display = "flex";
-
-  emojiSize.value = parseInt(currentSelectedEmoji.style.width || currentSelectedEmoji.style.fontSize);
-}
-
-// Désélectionner l'emoji quand on clique ailleurs
-document.body.addEventListener("click", () => {
-  currentSelectedEmoji = null;
-  document.getElementById("sizeControl").style.display = "none";
-});
-
-// Modification dynamique de taille via le curseur
-document.getElementById("emojiSize").addEventListener("input", (event) => {
-  if (currentSelectedEmoji) {
-    const newSize = event.target.value;
-    if (currentSelectedEmoji.querySelector('img')) {
-      // Si c'est une image
-      currentSelectedEmoji.style.width = `${newSize}px`;
-      currentSelectedEmoji.style.height = `${newSize}px`;
-    } else {
-      // Si c'est un texte emoji
-      currentSelectedEmoji.style.fontSize = `${newSize}px`;
-    }
-  });
 });
