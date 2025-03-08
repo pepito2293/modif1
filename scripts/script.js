@@ -65,13 +65,6 @@ function generateCards() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    const emojiRotationSlider = document.getElementById("emojiRotation");
-    if (emojiRotationSlider) {
-        emojiRotationSlider.value = 0; // Réinitialise la rotation à 0 au démarrage
-    }
-});
-
 // Fonction pour positionner les symboles sur une carte
 function positionSymbols(cardDiv, card) {
   const cardSize = 250;
