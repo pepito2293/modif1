@@ -328,3 +328,17 @@ footer p {
     align-items: center; /* Aligne les éléments verticalement */
     margin-top: 20px;
 }
+
+.slider-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#emojiRotation {
+    width: 300px;
+}
+
+#emojiRotationValue {
+    font-weight: bold;
+    color: #000;
+}
