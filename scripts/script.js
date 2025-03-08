@@ -124,6 +124,55 @@ function positionSymbols(cardDiv, card) {
   });
 }
 
+// Fonction pour activer le déplacement des émojis
+function enableDrag(symbol) {
+  let isDragging = false; // Indique si le symbole est en cours de déplacement
+  let offsetX, offsetY;
+
+  // Empêche le comportement par défaut de drag & drop
+  symbol.addEventListener("dragstart", (event) => {
+    event.preventDefault();
+  });
+
+  // Début du déplacement
+  symbol.addEventListener("mousedown", (event) => {
+    isDragging = true;
+    offsetX = event.clientX - symbol.offsetLeft;
+    offsetY = event.clientY - symbol.offsetTop;
+    symbol.style.cursor = "grabbing"; // Change le curseur pendant le déplacement
+  });
+
+  // Déplacement de l'émoji
+  document.addEventListener("mousemove", (event) => {
+    if (isDragging) {
+      const parentRect = symbol.parentElement.getBoundingClientRect();
+      let newLeft = event.clientX - offsetX;
+      let newTop = event.clientY - offsetY;
+
+      // Empêche le symbole de sortir de la carte
+      if (newLeft < 0) newLeft = 0;
+      if (newTop < 0) newTop = 0;
+      if (newLeft + symbol.offsetWidth > parentRect.width) {
+        newLeft = parentRect.width - symbol.offsetWidth;
+      }
+      if (newTop + symbol.offsetHeight > parentRect.height) {
+        newTop = parentRect.height - symbol.offsetHeight;
+      }
+
+      symbol.style.left = `${newLeft}px`;
+      symbol.style.top = `${newTop}px`;
+    }
+  });
+
+  // Fin du déplacement
+  document.addEventListener("mouseup", () => {
+    if (isDragging) {
+      isDragging = false;
+      symbol.style.cursor = "move"; // Retourne au curseur par défaut
+    }
+  });
+}
+
 // DOs des cartes
 let backCardImage = null; // Stocke l'image du dos des cartes
 
@@ -394,84 +443,3 @@ window.addEventListener("load", () => {
         document.getElementById("backCardPreview").style.display = "block";
     }
 });
-
-
-// --- Affiche le curseur de contrôle de taille ---
-function selectEmoji(symbol) {
-  currentSelectedEmoji = symbol;
-  const sizeControl = document.getElementById("sizeControl");
-  const emojiSize = document.getElementById("emojiSize");
-  const emojiSizeValue = document.getElementById("emojiSizeValue");
-
-  const currentSize = symbol.querySelector('img') ? symbol.offsetWidth : parseInt(window.getComputedStyle(symbol).fontSize);
-
-  emojiSize.value = currentSize;
-  emojiSizeValue.textContent = currentSize;
-
-  sizeControl.style.display = "flex";
-}
-
-// --- Cache le contrôle quand on clique ailleurs ---
-document.body.addEventListener("click", () => {
-  currentSelectedEmoji = null;
-  document.getElementById("sizeControl").style.display = "none";
-});
-
-// --- Ajuste dynamiquement la taille de l'émoji sélectionné ---
-document.getElementById("emojiSize").addEventListener("input", (event) => {
-  const newSize = event.target.value;
-  document.getElementById("emojiSizeValue").textContent = newSize;
-
-  if (currentSelectedEmoji) {
-    if (currentSelectedEmoji.querySelector('img')) {
-      currentSelectedEmoji.style.width = `${newSize}px`;
-      currentSelectedEmoji.style.height = `${newSize}px`;
-    } else {
-      currentSelectedEmoji.style.fontSize = `${newSize}px`;
-    }
-  }
-});
-
-// --- Désélectionne l'émoji en cliquant ailleurs sur la page ---
-document.body.addEventListener("click", () => {
-  currentSelectedEmoji = null;
-  document.getElementById("sizeControl").style.display = "none";
-});
-
-// --- Fonction pour activer le déplacement et la sélection des émojis ---
-function enableDrag(symbol) {
-  let isDragging = false;
-  let offsetX, offsetY;
-
-  symbol.addEventListener("dragstart", (event) => event.preventDefault());
-
-  symbol.addEventListener("mousedown", (event) => {
-    isDragging = true;
-    offsetX = event.clientX - symbol.offsetLeft;
-    offsetY = event.clientY - symbol.offsetTop;
-    symbol.style.cursor = "grabbing";
-
-    selectEmoji(symbol); // Sélectionne l'émoji
-  });
-
-  document.addEventListener("mousemove", (event) => {
-    if (isDragging) {
-      const parentRect = symbol.parentElement.getBoundingClientRect();
-      let newLeft = event.clientX - offsetX;
-      let newTop = event.clientY - offsetY;
-
-      newLeft = Math.max(0, Math.min(newLeft, parentRect.width - symbol.offsetWidth));
-      newTop = Math.max(0, Math.min(newTop, parentRect.height - symbol.offsetHeight));
-
-      symbol.style.left = `${newLeft}px`;
-      symbol.style.top = `${newTop}px`;
-    }
-  });
-
-  document.addEventListener("mouseup", () => {
-    if (isDragging) {
-      isDragging = false;
-      symbol.style.cursor = "move";
-    }
-  });
-
