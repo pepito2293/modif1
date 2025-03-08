@@ -482,10 +482,7 @@ window.addEventListener("load", () => {
     }
 });
 
-
-
-
-
+// Tableau emojis
 document.addEventListener("DOMContentLoaded", () => {
   const emojiSizeSlider = document.getElementById("emojiSize");
   const emojiRotationSlider = document.getElementById("emojiRotation");
