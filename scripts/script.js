@@ -65,113 +65,89 @@ function generateCards() {
   });
 }
 
-// Fonction pour positionner les symboles sur une carte
-function positionSymbols(cardDiv, card) {
-  const cardSize = 250;
-  const margin = 20;
-
-  // Récupère les valeurs des curseurs pour les tailles minimale et maximale
-  const minSize = parseInt(document.getElementById("minSize").value, 10) || 30;
-  const maxSize = parseInt(document.getElementById("maxSize").value, 10) || 70;
-
-  const positions = [];
-
-  card.forEach((symbol) => {
-    let isValidPosition = false;
-    let x, y, size;
-
-    while (!isValidPosition) {
-      size = Math.random() * (maxSize - minSize) + minSize; // Taille aléatoire
-      x = margin + Math.random() * (cardSize - 2 * margin - size);
-      y = margin + Math.random() * (cardSize - 2 * margin - size);
-
-      // Vérifie que les émojis ne se chevauchent pas
-      isValidPosition = positions.every(pos => {
-        const distance = Math.sqrt(Math.pow(pos.x - x, 2) + Math.pow(pos.y - y, 2));
-        return distance > (pos.size + size) / 2 + 10;
-      });
-    }
-
-    positions.push({ x, y, size });
-
-    const rotation = Math.random() * 360; // Rotation aléatoire entre 0 et 360 degrés
-    const symbolDiv = document.createElement("div");
-    symbolDiv.className = "symbol";
-
-    if (symbol.startsWith("data:image")) {
-      const img = document.createElement("img");
-      img.src = symbol;
-      img.style.width = `${size}px`;
-      img.style.height = `${size}px`;
-      symbolDiv.appendChild(img);
-    } else {
-      symbolDiv.textContent = symbol;
-      symbolDiv.style.fontSize = `${size}px`;
-    }
-
-    // Applique les styles, y compris la rotation
-    Object.assign(symbolDiv.style, {
-      left: `${x}px`,
-      top: `${y}px`,
-      width: `${size}px`,
-      height: `${size}px`,
-      transform: `rotate(${rotation}deg)`, // Applique la rotation
-      transformOrigin: "center", // Centre la rotation
-    });
-
-    enableDrag(symbolDiv); // Active le déplacement pour chaque émoji
-    cardDiv.appendChild(symbolDiv);
-  });
-}
-
-// Fonction pour activer le déplacement des émojis
+// Fonction pour activer le déplacement et la sélection d'un émoji
 function enableDrag(symbol) {
-  let isDragging = false; // Indique si le symbole est en cours de déplacement
+  let isDragging = false;
   let offsetX, offsetY;
 
-  // Empêche le comportement par défaut de drag & drop
-  symbol.addEventListener("dragstart", (event) => {
-    event.preventDefault();
-  });
+  symbol.addEventListener("dragstart", (event) => event.preventDefault());
 
-  // Début du déplacement
   symbol.addEventListener("mousedown", (event) => {
     isDragging = true;
     offsetX = event.clientX - symbol.offsetLeft;
     offsetY = event.clientY - symbol.offsetTop;
-    symbol.style.cursor = "grabbing"; // Change le curseur pendant le déplacement
+    symbol.style.cursor = "grabbing";
+
+    selectEmoji(symbol);
   });
 
-  // Déplacement de l'émoji
   document.addEventListener("mousemove", (event) => {
     if (isDragging) {
       const parentRect = symbol.parentElement.getBoundingClientRect();
       let newLeft = event.clientX - offsetX;
       let newTop = event.clientY - offsetY;
 
-      // Empêche le symbole de sortir de la carte
-      if (newLeft < 0) newLeft = 0;
-      if (newTop < 0) newTop = 0;
-      if (newLeft + symbol.offsetWidth > parentRect.width) {
-        newLeft = parentRect.width - symbol.offsetWidth;
-      }
-      if (newTop + symbol.offsetHeight > parentRect.height) {
-        newTop = parentRect.height - symbol.offsetHeight;
-      }
+      newLeft = Math.max(0, Math.min(newLeft, parentRect.width - symbol.offsetWidth));
+      newTop = Math.max(0, Math.min(newTop, parentRect.height - symbol.offsetHeight));
 
       symbol.style.left = `${newLeft}px`;
       symbol.style.top = `${newTop}px`;
     }
   });
 
-  // Fin du déplacement
   document.addEventListener("mouseup", () => {
     if (isDragging) {
       isDragging = false;
-      symbol.style.cursor = "move"; // Retourne au curseur par défaut
+      symbol.style.cursor = "move";
     }
   });
+
+  symbol.addEventListener("click", (e) => {
+    e.stopPropagation();
+    selectEmoji(symbol);
+  });
 }
+
+let currentSelectedEmoji = null;
+
+// Sélectionner un emoji
+function selectEmoji(symbol) {
+  currentSelectedEmoji = symbol;
+  const sizeControl = document.getElementById("sizeControl");
+  const emojiSize = document.getElementById("emojiSize");
+  const emojiSizeValue = document.getElementById("emojiSizeValue");
+
+  const currentSize = symbol.offsetWidth;
+
+  emojiSize.value = currentSize;
+  emojiSizeValue.textContent = currentSize;
+
+  sizeControl.style.display = "flex";
+}
+
+// Désélectionner l'émoji en cliquant ailleurs
+let currentSelectedEmoji = null;
+document.body.addEventListener("click", () => {
+  currentSelectedEmoji = null;
+  document.getElementById("sizeControl").style.display = "none";
+});
+
+// Modification dynamique de taille via le curseur
+const emojiSizeSlider = document.getElementById("emojiSize");
+emojiSizeSlider.addEventListener("input", (event) => {
+  const newSize = event.target.value;
+  document.getElementById("emojiSizeValue").textContent = newSize;
+
+  if (currentSelectedEmoji) {
+    if (currentSelectedEmoji.querySelector('img')) {
+      currentSelectedEmoji.style.width = `${newSize}px`;
+      currentSelectedEmoji.style.height = `${newSize}px`;
+    } else {
+      currentSelectedEmoji.style.fontSize = `${newSize}px`;
+    }
+  }
+});
+
 
 // DOs des cartes
 let backCardImage = null; // Stocke l'image du dos des cartes
