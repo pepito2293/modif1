@@ -177,21 +177,14 @@ function selectEmoji(symbol) {
   const sizeControl = document.getElementById("sizeControl");
   const emojiSize = document.getElementById("emojiSize");
   const emojiSizeValue = document.getElementById("emojiSizeValue");
-  const emojiRotation = document.getElementById("emojiRotation");
-  const emojiRotationValue = document.getElementById("emojiRotationValue");
 
   const currentSize = symbol.offsetWidth;
-  const currentRotation = symbol.dataset.rotation || 0;
 
   emojiSize.value = currentSize;
   emojiSizeValue.textContent = currentSize;
 
-  emojiRotation.value = currentRotation;
-  emojiRotationValue.textContent = currentRotation;
-
   sizeControl.style.display = "flex";
 }
-
 
 // Désélectionne l'émoji en cliquant ailleurs
  document.body.addEventListener("click", (event) => {
@@ -489,114 +482,38 @@ window.addEventListener("load", () => {
     }
 });
 
+// Tableau emojis
 document.addEventListener("DOMContentLoaded", () => {
-  
-  // Génération du tableau des émojis si la fonction existe
-  if (typeof populateEmojiTable === 'function') {
-    populateEmojiTable();
-  }
+  const emojiSizeSlider = document.getElementById("emojiSize");
+  const emojiRotationSlider = document.getElementById("emojiRotation");
 
-  // Génération des cartes Dobble uniquement sur la page generateur.html
-  const currentPage = window.location.pathname;
-  if (currentPage.includes("generateur.html")) {
-    if (typeof generateCards === 'function') {
-      generateCards();
+  if (emojiSizeSlider) {
+    emojiSizeSlider.addEventListener("input", (event) => {
+      const newSize = event.target.value;
+      const emojiSizeValue = document.getElementById("emojiSizeValue");
+      if (emojiSizeValue) emojiSizeValue.textContent = newSize;
 
-      const minSizeInput = document.getElementById("minSize");
-      const maxSizeInput = document.getElementById("maxSize");
-
-      if (minSizeInput) {
-        minSizeInput.addEventListener("input", () => {
-          updatePreview();
-          generateCards();
-        });
+      if (currentSelectedEmoji) {
+        if (currentSelectedEmoji.querySelector('img')) {
+          currentSelectedEmoji.style.width = `${newSize}px`;
+          currentSelectedEmoji.style.height = `${newSize}px`;
+        } else {
+          currentSelectedEmoji.style.fontSize = `${newSize}px`;
+        }
       }
+    });
+  }
 
-      if (maxSizeInput) {
-        maxSizeInput.addEventListener("input", () => {
-          updatePreview();
-          generateCards();
-        });
+  if (emojiRotationSlider) {
+    emojiRotationSlider.addEventListener("input", (event) => {
+      const newRotation = event.target.value;
+      const emojiRotationValue = document.getElementById("emojiRotationValue");
+      if (emojiRotationValue) emojiRotationValue.textContent = newRotation;
+
+      if (currentSelectedEmoji) {
+        currentSelectedEmoji.style.transform = `rotate(${newRotation}deg)`;
+        currentSelectedEmoji.dataset.rotation = newRotation;
       }
-    }
-
-    // Gestion des curseurs taille et rotation (uniquement sur generateur.html)
-    const emojiSizeSlider = document.getElementById("emojiSize");
-    const emojiRotationSlider = document.getElementById("emojiRotation");
-
-    if (emojiSizeSlider) {
-      emojiSizeSlider.addEventListener("input", (event) => {
-        const newSize = event.target.value;
-        const emojiSizeValue = document.getElementById("emojiSizeValue");
-        if (emojiSizeValue) emojiSizeValue.textContent = newSize;
-
-        if (currentSelectedEmoji) {
-          if (currentSelectedEmoji.querySelector('img')) {
-            currentSelectedEmoji.style.width = `${newSize}px`;
-            currentSelectedEmoji.style.height = `${newSize}px`;
-          } else {
-            currentSelectedEmoji.style.fontSize = `${newSize}px`;
-          }
-        }
-      });
-    }
-
-    if (emojiRotationSlider) {
-      emojiRotationSlider.addEventListener("input", (event) => {
-        const newRotation = event.target.value;
-        const emojiRotationValue = document.getElementById("emojiRotationValue");
-        if (emojiRotationValue) emojiRotationValue.textContent = newRotation;
-
-        if (currentSelectedEmoji) {
-          currentSelectedEmoji.style.transform = `rotate(${newRotation}deg)`;
-          currentSelectedEmoji.dataset.rotation = newRotation;
-        }
-      });
-    }
-  }
-
-  // Gestion bouton « Tout réinitialiser » uniquement sur la page emoji-customization.html
-  if (currentPage.includes("emoji-customization.html")) {
-    const resetAllButton = document.getElementById("resetAll");
-    if (resetAllButton) {
-      resetAllButton.addEventListener("click", () => {
-        if (confirm("Voulez-vous vraiment réinitialiser tous les émojis ?")) {
-          emojiList = [...defaultEmojis];
-          saveEmojiList();
-          populateEmojiTable();
-        }
-      });
-    }
-
-    // Gestion de l'upload du dos de carte
-    const backCardUpload = document.getElementById("backCardUpload");
-    if (backCardUpload) {
-      backCardUpload.addEventListener("change", (event) => {
-        const file = event.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            backCardImage = e.target.result;
-            localStorage.setItem("backCardImage", backCardImage);
-            const backCardPreview = document.getElementById("backCardPreview");
-            if (backCardPreview) {
-              backCardPreview.src = backCardImage;
-              backCardPreview.style.display = "block";
-            }
-          };
-          reader.readAsDataURL(file);
-        }
-      });
-    }
-  }
-
-  // Chargement image dos carte (commun aux deux pages)
-  if (localStorage.getItem("backCardImage")) {
-    backCardImage = localStorage.getItem("backCardImage");
-    const backCardPreview = document.getElementById("backCardPreview");
-    if (backCardPreview) {
-      backCardPreview.src = backCardImage;
-      backCardPreview.style.display = "block";
-    }
+    });
   }
 });
