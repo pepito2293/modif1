@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personnalisation des émojis</title>
+   <link rel="stylesheet" href="styles/global.css">
+    <link rel="stylesheet" href="styles/emoji-customization.css">
+    <script src="scripts/script.js" defer></script>
+</head>
+<body>
+
+    <!-- Menu hamburger -->
+    <nav class="hamburger-menu">
+        <input type="checkbox" id="menu-toggle">
+        <label for="menu-toggle" class="menu-icon">☰</label>
+        <ul class="menu-items">
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="emoji-customization.html">Personnaliser les émojis</a></li>
+        </ul>
+    </nav>
+
+    <!-- Contenu principal -->
+    <main>
+        <h2>Personnalisez vos émojis</h2>
+
+        <!-- Conteneur pour aligner les boutons -->
+        <div class="buttons-container">
+            <div class="upload-back-container">
+                <label for="backCardUpload" class="bouton-style">Choisir un dos de carte</label>
+                <input type="file" id="backCardUpload" accept="image/*" style="display: none;">
+                <img id="backCardPreview" src="" alt="Aperçu du dos" style="display:none; max-width:100px; margin-top:10px;">
+            </div>
+    
+            <div class="reset-all-container">
+                <button id="resetAll">Tout réinitialiser</button>
+            </div>
+        </div>
+
+        <!-- Tableau unique des émojis -->
+        <table id="emojiTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Émoji actuel</th>
+                    <th>Nouvelle image</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Génération dynamique des lignes via JavaScript -->
+            </tbody>
+        </table>
+    
+        <div class="card-container-wrapper">
+            <div class="card-container" id="cardContainer"></div>
+        </div>
+        <!-- Éléments cachés pour éviter les erreurs JavaScript -->
+<div id="sizeControl" style="display:none;">
+  <input type="range" id="emojiSize" min="10" max="120">
+  <span id="emojiSizeValue"></span>
+  
+  <input type="range" id="emojiRotation" min="0" max="360">
+  <span id="emojiRotationValue"></span>
+</div>
+
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 Créations Dupdup</p>
+    </footer>
+    
+</body>
+</html>
